@@ -526,6 +526,13 @@ class Music(commands.Cog):
             return
 
         track: wavelink.Playable = player.queue.loaded
+        if not track:
+            await ctx.send(
+                content="No hay una canción reproduciéndose actualmente ni hay canciones en cola.",
+                ephemeral=True
+            )
+            return
+
         embed = discord.Embed(
             description=(
                 f"Reproduciendo actualmente: [**{track.title}**]({track.uri}) de `{track.author}`"
@@ -543,7 +550,7 @@ class Music(commands.Cog):
             embed.set_thumbnail(url=track.artwork)
 
         queue_text = ""
-        for index, t in enumerate(player.queue[:10], start=1):
+        for index, t in enumerate(player.queue[:5], start=1):
             queue_text += f"**{index}.** [**{t.title}**]({t.uri}) de `{t.author}` ({format_duration(t.length)})\n"
 
         total_duration = sum(t.length for t in player.queue)
